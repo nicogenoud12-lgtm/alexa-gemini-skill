@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "session": {
+    "new": false,
+    "sessionId": "amzn1.echo-api.session.test",
+    "application": { "applicationId": "amzn1.ask.skill.TEST" },
+    "attributes": { "history": [] },
+    "user": { "userId": "amzn1.ask.account.TEST" }
+  },
+  "context": {
+    "System": {
+      "application": { "applicationId": "amzn1.ask.skill.TEST" }
+    }
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "amzn1.echo-api.request.test-stop",
+    "timestamp": "2026-06-25T12:00:10Z",
+    "locale": "es-ES",
+    "intent": { "name": "AMAZON.StopIntent", "confirmationStatus": "NONE" }
+  }
+}

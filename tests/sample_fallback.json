@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "session": {
+    "new": false,
+    "sessionId": "amzn1.echo-api.session.test",
+    "application": { "applicationId": "amzn1.ask.skill.TEST" },
+    "attributes": { "history": [] },
+    "user": { "userId": "amzn1.ask.account.TEST" }
+  },
+  "context": {
+    "System": {
+      "application": { "applicationId": "amzn1.ask.skill.TEST" },
+      "user": { "userId": "amzn1.ask.account.TEST" }
+    }
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "amzn1.echo-api.request.test-ask",
+    "timestamp": "2026-06-25T12:00:05Z",
+    "locale": "es-ES",
+    "intent": {
+      "name": "AskGeminiIntent",
+      "confirmationStatus": "NONE",
+      "slots": {
+        "query": {
+          "name": "query",
+          "value": "cuantos planetas tiene el sistema solar",
+          "confirmationStatus": "NONE"
+        }
+      }
+    }
+  }
+}
