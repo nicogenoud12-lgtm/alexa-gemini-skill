@@ -75,29 +75,29 @@ Variables de `.env`:
 ### Local (desarrollo, sin firma de Alexa)
 
 ```bash
-VERIFY_ALEXA_SIGNATURE=false uvicorn app.main:app --reload --port 8080
+VERIFY_ALEXA_SIGNATURE=false uvicorn app.main:app --reload --port 8095
 ```
 
 Probá los endpoints con los JSON de ejemplo de `tests/`:
 
 ```bash
 # Bienvenida
-curl -s -X POST http://localhost:8080/alexa \
+curl -s -X POST http://localhost:8095/alexa \
   -H "Content-Type: application/json" \
   -d @tests/sample_launch.json | python3 -m json.tool
 
 # Pregunta a Gemini (requiere GEMINI_API_KEY válida en .env)
-curl -s -X POST http://localhost:8080/alexa \
+curl -s -X POST http://localhost:8095/alexa \
   -H "Content-Type: application/json" \
   -d @tests/sample_fallback.json | python3 -m json.tool
 
 # Stop
-curl -s -X POST http://localhost:8080/alexa \
+curl -s -X POST http://localhost:8095/alexa \
   -H "Content-Type: application/json" \
   -d @tests/sample_stop.json | python3 -m json.tool
 
 # Healthcheck
-curl -s http://localhost:8080/health
+curl -s http://localhost:8095/health
 ```
 
 ### Producción (home server CasaOS)
@@ -105,7 +105,7 @@ curl -s http://localhost:8080/health
 Path sugerido: `/home/genoud/alexa-gemini`. Con `VERIFY_ALEXA_SIGNATURE=true`:
 
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 8080
+uvicorn app.main:app --host 0.0.0.0 --port 8095
 ```
 
 Para que quede corriendo como servicio (ejemplo systemd, usuario `genoud`):
@@ -120,7 +120,7 @@ After=network.target
 User=genoud
 WorkingDirectory=/home/genoud/alexa-gemini
 EnvironmentFile=/home/genoud/alexa-gemini/.env
-ExecStart=/home/genoud/alexa-gemini/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8080
+ExecStart=/home/genoud/alexa-gemini/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8095
 Restart=always
 
 [Install]
@@ -132,7 +132,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now alexa-gemini
 ```
 
-> **Puerto:** la app escucha en **8080**. Cambialo con `--port` si lo necesitás
+> **Puerto:** la app escucha en **8095**. Cambialo con `--port` si lo necesitás
 > (y actualizá Cloudflare Tunnel en consecuencia).
 
 ---
@@ -141,15 +141,15 @@ sudo systemctl enable --now alexa-gemini
 
 Alexa exige un endpoint **HTTPS con certificado válido**. El túnel de Cloudflare ya
 lo cubre. En tu config del túnel (`config.yml` de `cloudflared`) apuntá un hostname
-público al servicio local en el puerto 8080:
+público al servicio local en el puerto 8095:
 
 ```yaml
 tunnel: <TU_TUNNEL_ID>
 credentials-file: /home/genoud/.cloudflared/<TU_TUNNEL_ID>.json
 
 ingress:
-  - hostname: alexa.tudominio.com
-    service: http://localhost:8080
+  - hostname: alexa.genoud-nube.com.ar
+    service: http://localhost:8095
   - service: http_status:404
 ```
 
@@ -157,7 +157,7 @@ ingress:
 cloudflared tunnel run
 ```
 
-La URL del endpoint para Alexa será: `https://alexa.tudominio.com/alexa`
+La URL del endpoint para Alexa será: `https://alexa.genoud-nube.com.ar/alexa`
 
 ---
 
@@ -172,7 +172,7 @@ La URL del endpoint para Alexa será: `https://alexa.tudominio.com/alexa`
    **Save Model** → **Build Model**.
 6. **Build → Endpoint:**
    - Tipo: **HTTPS**.
-   - Default Region: `https://alexa.tudominio.com/alexa`.
+   - Default Region: `https://alexa.genoud-nube.com.ar/alexa`.
    - Certificado: **"My development endpoint is a sub-domain of a domain that has a
      wildcard certificate from a certificate authority"** (Cloudflare usa cert de CA
      válida, así que esta opción es la correcta).
