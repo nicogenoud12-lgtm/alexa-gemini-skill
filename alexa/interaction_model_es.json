@@ -27,6 +27,26 @@
         }
       ],
       "types": []
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "AskGeminiIntent",
+          "delegationStrategy": "SKILL_RESPONSE",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "query",
+              "type": "AMAZON.SearchQuery",
+              "confirmationRequired": false,
+              "elicitationRequired": false,
+              "prompts": {}
+            }
+          ]
+        }
+      ],
+      "delegationStrategy": "SKILL_RESPONSE"
     }
   }
 }
