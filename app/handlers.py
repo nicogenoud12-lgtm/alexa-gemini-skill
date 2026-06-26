@@ -16,10 +16,7 @@ logger = logging.getLogger(__name__)
 ASK_INTENT = "AskGeminiIntent"
 QUERY_SLOT = "query"
 
-WELCOME = (
-    "Hola. Soy tu asistente con inteligencia artificial. "
-    "Preguntame lo que quieras."
-)
+WELCOME = "Hola Nico, decime."
 WELCOME_REPROMPT = "¿Qué te gustaría preguntar?"
 GOODBYE = "Hasta luego."
 REPROMPT = "¿Querés preguntar algo más?"
