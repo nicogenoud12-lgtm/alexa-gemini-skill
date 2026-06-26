@@ -95,6 +95,7 @@ async def ask_gemini(question: str, history: list[dict] | None = None) -> str:
         system_instruction=SYSTEM_INSTRUCTION,
         max_output_tokens=300,
         temperature=0.7,
+        tools=[types.Tool(google_search=types.GoogleSearch())],
     )
 
     try:
