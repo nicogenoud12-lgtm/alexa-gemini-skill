@@ -1,25 +1,28 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "asistente inteligente",
+      "invocationName": "inteligencia artificial",
       "intents": [
         { "name": "AMAZON.CancelIntent", "samples": [] },
         { "name": "AMAZON.StopIntent", "samples": [] },
         { "name": "AMAZON.HelpIntent", "samples": [] },
         { "name": "AMAZON.FallbackIntent", "samples": [] },
+        { "name": "AMAZON.NavigateHomeIntent", "samples": [] },
         {
           "name": "AskGeminiIntent",
           "slots": [
             { "name": "query", "type": "AMAZON.SearchQuery" }
           ],
           "samples": [
-            "{query}",
             "preguntale {query}",
+            "pregunta {query}",
             "quiero saber {query}",
             "decime {query}",
+            "deci {query}",
             "explicame {query}",
             "contame {query}",
-            "que opinas de {query}"
+            "que opinas de {query}",
+            "respondeme {query}"
           ]
         }
       ],
