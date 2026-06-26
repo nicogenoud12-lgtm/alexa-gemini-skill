@@ -31,17 +31,39 @@ ERROR_SPEECH = (
 NO_QUESTION_SPEECH = "No te entendí bien. ¿Podés repetir la pregunta?"
 
 
+def _elicit_query_directive() -> dict:
+    """Directiva Dialog.ElicitSlot: lo siguiente que diga el usuario va al slot query."""
+    return {
+        "type": "Dialog.ElicitSlot",
+        "slotToElicit": QUERY_SLOT,
+        "updatedIntent": {
+            "name": ASK_INTENT,
+            "confirmationStatus": "NONE",
+            "slots": {
+                QUERY_SLOT: {
+                    "name": QUERY_SLOT,
+                    "confirmationStatus": "NONE",
+                }
+            },
+        },
+    }
+
+
 def _response(speech: str, *, reprompt: str | None = None,
-              end_session: bool = False, session_attributes: dict | None = None) -> dict:
+              end_session: bool = False, session_attributes: dict | None = None,
+              elicit_query: bool = False) -> dict:
     """Construye una respuesta JSON con el formato que espera Alexa."""
     response: dict = {
         "outputSpeech": {"type": "PlainText", "text": speech},
-        "shouldEndSession": end_session,
     }
     if reprompt is not None:
         response["reprompt"] = {
             "outputSpeech": {"type": "PlainText", "text": reprompt}
         }
+    if elicit_query:
+        response["directives"] = [_elicit_query_directive()]
+    else:
+        response["shouldEndSession"] = end_session
     return {
         "version": "1.0",
         "sessionAttributes": session_attributes or {},
@@ -75,11 +97,10 @@ async def _handle_question(question: str, history: list[dict]) -> dict:
     try:
         answer = await ask_gemini(question, history)
     except GeminiError:
-        # No actualizamos el historial si falló; mantenemos la sesión abierta.
         return _response(
             ERROR_SPEECH,
             reprompt=REPROMPT,
-            end_session=False,
+            elicit_query=True,
             session_attributes={"history": history},
         )
 
@@ -90,7 +111,7 @@ async def _handle_question(question: str, history: list[dict]) -> dict:
     return _response(
         answer,
         reprompt=REPROMPT,
-        end_session=False,
+        elicit_query=True,
         session_attributes={"history": new_history},
     )
 
@@ -101,7 +122,7 @@ async def handle_request(payload: dict) -> dict:
     request_type = request.get("type")
 
     if request_type == "LaunchRequest":
-        return _response(WELCOME, reprompt=WELCOME_REPROMPT, end_session=False)
+        return _response(WELCOME, reprompt=WELCOME_REPROMPT, elicit_query=True)
 
     if request_type == "SessionEndedRequest":
         # Alexa no espera contenido; devolvemos una respuesta mínima válida.
@@ -115,7 +136,7 @@ async def handle_request(payload: dict) -> dict:
             return _response(GOODBYE, end_session=True)
 
         if intent_name == "AMAZON.HelpIntent":
-            return _response(WELCOME, reprompt=WELCOME_REPROMPT, end_session=False)
+            return _response(WELCOME, reprompt=WELCOME_REPROMPT, elicit_query=True)
 
         if intent_name == ASK_INTENT:
             question = _extract_query(payload)
@@ -123,19 +144,18 @@ async def handle_request(payload: dict) -> dict:
                 return _response(
                     NO_QUESTION_SPEECH,
                     reprompt=FALLBACK_REPROMPT,
-                    end_session=False,
+                    elicit_query=True,
                     session_attributes={"history": history},
                 )
             return await _handle_question(question, history)
 
         if intent_name == "AMAZON.FallbackIntent":
-            # Red de seguridad: el FallbackIntent no trae el texto del usuario.
             return _response(
                 NO_QUESTION_SPEECH,
                 reprompt=FALLBACK_REPROMPT,
-                end_session=False,
+                elicit_query=True,
                 session_attributes={"history": history},
             )
 
     logger.info("Tipo de request no manejado: %s", request_type)
-    return _response(NO_QUESTION_SPEECH, reprompt=REPROMPT, end_session=False)
+    return _response(NO_QUESTION_SPEECH, reprompt=REPROMPT, elicit_query=True)
