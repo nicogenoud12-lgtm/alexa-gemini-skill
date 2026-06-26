@@ -11,42 +11,37 @@
         {
           "name": "AskGeminiIntent",
           "slots": [
-            { "name": "query", "type": "AMAZON.SearchQuery" }
+            { "name": "query", "type": "FREE_TEXT" }
           ],
           "samples": [
+            "{query}",
             "preguntale {query}",
             "pregunta {query}",
             "quiero saber {query}",
             "decime {query}",
-            "deci {query}",
             "explicame {query}",
             "contame {query}",
-            "que opinas de {query}",
             "respondeme {query}"
           ]
         }
       ],
-      "types": []
-    },
-    "dialog": {
-      "intents": [
+      "types": [
         {
-          "name": "AskGeminiIntent",
-          "delegationStrategy": "SKILL_RESPONSE",
-          "confirmationRequired": false,
-          "prompts": {},
-          "slots": [
-            {
-              "name": "query",
-              "type": "AMAZON.SearchQuery",
-              "confirmationRequired": false,
-              "elicitationRequired": false,
-              "prompts": {}
-            }
+          "name": "FREE_TEXT",
+          "values": [
+            { "name": { "value": "cuántos planetas tiene el sistema solar" } },
+            { "name": { "value": "qué hora es en tokio" } },
+            { "name": { "value": "quién inventó la electricidad" } },
+            { "name": { "value": "la creatina es buena para la salud" } },
+            { "name": { "value": "cuál es la capital de australia" } },
+            { "name": { "value": "cómo se hace una tortilla" } },
+            { "name": { "value": "qué temperatura hace hoy" } },
+            { "name": { "value": "cuánto es dos más dos" } },
+            { "name": { "value": "quién ganó el mundial dos mil veintidós" } },
+            { "name": { "value": "para qué sirve el magnesio" } }
           ]
         }
-      ],
-      "delegationStrategy": "SKILL_RESPONSE"
+      ]
     }
   }
 }
